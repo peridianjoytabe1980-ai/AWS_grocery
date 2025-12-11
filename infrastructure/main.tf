@@ -9,8 +9,8 @@ terraform {
 
 provider "aws" { 
  region = "eu-central-1"
-} resource "aws_security_group" "app_sg"
-{
+}
+resource "aws_security_group" "app_sg"{
  name = "app-sg" 
  description = "Allow SSH and app traffic"
 
@@ -43,17 +43,14 @@ data "aws_ami" "amazon_linux" {
 
 filter {
  name = "name"
- values = ["amzn2-ami-hvm-*-x86_64-
-gp2"]
+ values = ["amzn2-ami-hvm-*-x86_64-gp2"]
  } 
 }
 
 resource "aws_instance" "app_server" {
- ami =
-data.aws_ami.amazon_linux.id
+ ami = data.aws_ami.amazon_linux.id
  instance_type = "t2.micro"
- vpc_security_group_ids =
-[aws_security_group.app_sg.id] 
+ vpc_security_group_ids = [aws_security_group.app_sg.id] 
 
  tags = {
   Name = "app-server"
