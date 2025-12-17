@@ -5,5 +5,9 @@ frontend/src/config.js~
 venv/
 infrastructure/.terraform/
 infrastructure/terraform.tfstate
+.terraform/
 terraform.tfstate
 terraform.tfstate.backup
+*.tfstate
+*.tfstate.*
+*.tfplan
