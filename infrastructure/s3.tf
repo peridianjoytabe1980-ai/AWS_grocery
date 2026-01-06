@@ -1,6 +1,6 @@
 
 resource "aws_s3_bucket" "avatars" {
-  bucket = "grocerymate-avatars-tabe1"
+  bucket = "grocerymate-avatars-tabe2"
 
   tags = {
     Name        = "grocerymate-avatars"

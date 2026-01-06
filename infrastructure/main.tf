@@ -7,8 +7,8 @@ terraform {
  }
 }
 
-provider "aws" { 
- region = "eu-central-1"
+provider "aws" {
+  region = "eu-central-1"
 }
 
 # VPC
@@ -17,13 +17,13 @@ resource "aws_vpc" "main" {
   tags = { Name = "main-vpc" }
 }
 
-# Internet Gateway
+# INTERNET GATEWAY
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
   tags = { Name = "main-igw" }
 }
 
-# Subnet
+# PUBLIC SUBNET
 resource "aws_subnet" "public" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
@@ -33,8 +33,7 @@ resource "aws_subnet" "public" {
   tags = { Name = "public-subnet" }
 }
 
-##Private
-  # Private Subnets
+  # PRIVATE SUBNET 1
   resource "aws_subnet" "private_subnet_1" {
     vpc_id     = aws_vpc.main.id
     cidr_block = "10.0.2.0/24"
@@ -43,7 +42,7 @@ resource "aws_subnet" "public" {
       Name = "Private Subnet-1"
     }
   }
-  ##Private
+  # PRIVATE SUBNET 2
   resource "aws_subnet" "private_subnet_2" {
     vpc_id     = aws_vpc.main.id
     cidr_block = "10.0.4.0/24"
@@ -58,9 +57,10 @@ resource "aws_subnet" "public" {
     subnet_ids = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id ]  #if multi AZ add another subnet
   }
 
-resource "aws_security_group" "app_sg"{
- name = "app-sg" 
+resource "aws_security_group" "app1_sg" {
+ name = "app1-sg"
  description = "Allow SSH and app traffic"
+  vpc_id  = aws_vpc.main.id
 
  ingress {
   from_port = 22
@@ -85,31 +85,33 @@ resource "aws_security_group" "app_sg"{
 }
 
 
-# EC2 Instance
+# EC2 INSTANCE
 resource "aws_instance" "app_server" {
- ami = "ami-08697da0e8d9f59ec"  # Amazon Linux 2023 in eu-central-1
+ ami = "ami-015f3aa67b494b27e"  # Amazon Linux 2023 in eu-central-1
  instance_type = "t2.micro"
- vpc_security_group_ids = [aws_security_group.app_sg.id] 
+ vpc_security_group_ids = [aws_security_group.app1_sg.id]
  subnet_id = aws_subnet.public.id
  tags = {
   Name = "app-server"
  }
 }
 
-# Security Group for RDS
+# SECURITY GROUP FOR RDS
 resource "aws_security_group" "rds_sg" {
   name        = "joy-rds-sg"
   description = "Security group for RDS instance"
   vpc_id      = aws_vpc.main.id
 
-  # PostgreSQL access only from EC2
-  ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    security_groups = [aws_security_group.app_sg.id]
-    description = "PostgreSQL access from EC2"
-  }
+
+  #postgresSQL ACCESS ONLY FROM EC2
+ ingress {
+  from_port   = 5432
+  to_port     = 5432
+  protocol    = "tcp"
+  security_groups = [aws_security_group.app1_sg.id]
+  description = "PostgresSQL access from EC2 subnet"
+}
+
 
   egress {
     from_port   = 0
@@ -120,7 +122,7 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
-# DB Instance
+# DB INSTANCE
 resource "aws_db_instance" "app_db" {
  allocated_storage = 20
  engine = "postgres"
@@ -129,27 +131,26 @@ resource "aws_db_instance" "app_db" {
  db_name = "grocerymate_db"
  username = "postgres"
  password = "Tabejoy01"
- #public_accessible = false
  skip_final_snapshot = true
-  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  vpc_security_group_ids = [aws_security_group.app1_sg.id]
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
 }
 
 
-# Route Table
+# ROUTE TABLE
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
   tags = { Name = "public-route-table" }
 }
 
-# Route to Internet
+# ROUTE TO INTERNET
 resource "aws_route" "internet" {
   route_table_id         = aws_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.main.id
 }
 
-# Associate with subnet
+# ASSOCIATE WITH SUBNET
 resource "aws_route_table_association" "public_assoc" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
