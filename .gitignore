@@ -11,3 +11,5 @@ terraform.tfstate.backup
 *.tfstate
 *.tfstate.*
 *.tfplan
+.terraform
+.terraform.lock.hcl

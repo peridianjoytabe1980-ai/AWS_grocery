@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "eu-central-1"
+  region = var.region
 }
 
 # VPC
@@ -88,7 +88,7 @@ resource "aws_security_group" "app1_sg" {
 # EC2 INSTANCE
 resource "aws_instance" "app_server" {
  ami = "ami-015f3aa67b494b27e"  # Amazon Linux 2023 in eu-central-1
- instance_type = "t2.micro"
+ instance_type = var.instance_type
  vpc_security_group_ids = [aws_security_group.app1_sg.id]
  subnet_id = aws_subnet.public.id
  tags = {
@@ -128,9 +128,9 @@ resource "aws_db_instance" "app_db" {
  engine = "postgres"
  engine_version = "17.6"
  instance_class = "db.t3.micro"
- db_name = "grocerymate_db"
- username = "postgres"
- password = "Tabejoy01"
+ db_name = var.db_name
+ username = var.db_username
+ password = var.db_password
  skip_final_snapshot = true
   vpc_security_group_ids = [aws_security_group.app1_sg.id]
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
