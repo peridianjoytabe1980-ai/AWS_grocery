@@ -1,0 +1,88 @@
+# AWS Grocery Project
+
+## Project Overview
+
+AWS Grocery is a cloud-based application deployed on AWS. 
+It includes an EC2 instance, PostgreSQL RDS database, S3 bucket for storing avatars, and a secure network setup (VPC, subnets, security groups, internet gateway). 
+Terraform is used for infrastructure provisioning and management.
+
+---
+## Architecture Diagram
+
+![AWS Architecture](/Users/joy/AWS_grocery/infrastructure:diagram.png)
+
+*Diagram shows the VPC, subnets, IGW, EC2, RDS, and S3 bucket.*
+
+---
+## Prerequisites
+
+- Terraform >= 1.5.0
+- AWS CLI configured with access credentials
+- Git
+- AWS account
+
+---
+## Terraform Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/peridianjoytabe1980-ai/AWS_grocery.git
+   cd AWS_grocery/infrastructure
+
+2. Initialize Terraform:
+
+    terraform init
+
+3. Review the Terraform plan:
+
+    terraform plan
+
+4. Apply the Terraform plan:
+
+    terraform apply
+
+Enter your RDS password when prompted.
+
+
+---
+
+## List Terraform Outputs
+Include a table of important outputs so users know what resources were created:
+
+```markdown
+Terraform Outputs
+
+| Output | Example Value | Description |
+|--------|---------------|-------------|
+| `aws_region` | `eu-central-1` | AWS region where resources are deployed |
+| `db_endpoint` | `terraform-xxxx.rds.amazonaws.com:5432` | RDS database endpoint |
+| `db_instance_id` | `db-xxxxxxxx` | RDS instance ID |
+| `ec2_instance_id` | `i-xxxxxxxx` | EC2 instance ID |
+| `ec2_public_ip` | `35.156.167.241` | Public IP of the EC2 instance |
+| `avatars_bucket_name` | `grocerymate-avatars-tabe2` | S3 bucket for avatars |
+
+```
+---
+## Usage
+
+- SSH into the EC2 instance:
+  ```bash
+  ssh -i <your-key.pem> ec2-user@<ec2_public_ip>
+
+- Connect to PostgreSQL:
+
+  psql -h <db_endpoint> -U <db_username> -d <db_name>
+
+- Access S3 bucket via AWS CLI or console
+
+
+---
+
+## Notes and Best Practices
+```markdown
+## Notes
+
+- Do **not** commit `.terraform/` or Terraform state files; they are local only.
+- Store passwords securely using Terraform variables with `sensitive = true`.
+```
+

@@ -57,43 +57,46 @@ resource "aws_subnet" "public" {
     subnet_ids = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id ]  #if multi AZ add another subnet
   }
 
+
 resource "aws_security_group" "app1_sg" {
- name = "app1-sg"
- description = "Allow SSH and app traffic"
-  vpc_id  = aws_vpc.main.id
+  name        = "app1-sg"
+  description = "Allow SSH, HTTP, and Flask app traffic"
+  vpc_id      = aws_vpc.main.id
 
- ingress {
-  from_port = 22
-  to_port = 22
-  protocol = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
- }
 
- ingress {
-  from_port = 80
-  to_port = 80 
-  protocol = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
- }
+  # Allow SSH
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
- egress {
-  from_port = 0
-  to_port = 0
-  protocol = "-1"
-  cidr_blocks = ["0.0.0.0/0"]
- }
+  # Allow HTTP
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
+  # Allow all outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
-
 
 # EC2 INSTANCE
 resource "aws_instance" "app_server" {
- ami = "ami-015f3aa67b494b27e"  # Amazon Linux 2023 in eu-central-1
- instance_type = var.instance_type
- vpc_security_group_ids = [aws_security_group.app1_sg.id]
- subnet_id = aws_subnet.public.id
- tags = {
-  Name = "app-server"
- }
+  ami           = "ami-015f3aa67b494b27e"
+  instance_type = var.instance_type
+  vpc_security_group_ids = [aws_security_group.app1_sg.id]
+  subnet_id = aws_subnet.public.id
+
 }
 
 # SECURITY GROUP FOR RDS
