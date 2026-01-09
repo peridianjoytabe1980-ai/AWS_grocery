@@ -9,7 +9,8 @@ Terraform is used for infrastructure provisioning and management.
 ---
 ## Architecture Diagram
 
-![AWS Architecture](/Users/joy/AWS_grocery/infrastructure:diagram.png)
+![Infrastructure Architecture](infrastructure/infrastructure_architech.png)
+
 
 *Diagram shows the VPC, subnets, IGW, EC2, RDS, and S3 bucket.*
 
