@@ -42,7 +42,7 @@ Terraform is used for infrastructure provisioning and management.
 
     terraform apply
 
-Enter your RDS password when prompted.
+Enter your RDS password when prompted. Must be >= 8. Only printable ASCII characters besides '/', '@', '"', ' ' may be used.
 
 
 ---
