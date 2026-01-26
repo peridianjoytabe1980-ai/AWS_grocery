@@ -33,6 +33,30 @@ resource "aws_subnet" "public" {
   tags = { Name = "public-subnet" }
 }
 
+# ROUTE TABLE
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+  tags = { Name = "public-route-table" }
+}
+
+# ROUTE TO INTERNET
+resource "aws_route" "internet" {
+  route_table_id         = aws_route_table.public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.main.id
+}
+
+# ASSOCIATE WITH SUBNET
+resource "aws_route_table_association" "public_assoc" {
+  subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_sns_topic" "topic" {
+  name = "WebServer-CPU_Utilization_alert"
+}
+
+
   # PRIVATE SUBNET 1
   resource "aws_subnet" "private_subnet_1" {
     vpc_id     = aws_vpc.main.id
@@ -148,8 +172,7 @@ resource "aws_security_group" "rds_sg" {
   description = "Security group for RDS instance"
   vpc_id      = aws_vpc.main.id
 
-
-  #postgresSQL ACCESS ONLY FROM EC2
+  # postgresSQL ACCESS ONLY FROM EC2
  ingress {
   from_port   = 5432
   to_port     = 5432
@@ -183,26 +206,14 @@ resource "aws_db_instance" "app_db" {
 }
 
 
-# ROUTE TABLE
-resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.main.id
-  tags = { Name = "public-route-table" }
+# SNS topic with email subscription
+resource "aws_sns_topic_subscription" "topic_email_subscription" {
+  topic_arn = aws_sns_topic.topic.arn
+  protocol  = "email"
+  endpoint  = "peridiant@gmail.com"
 }
 
-# ROUTE TO INTERNET
-resource "aws_route" "internet" {
-  route_table_id         = aws_route_table.public.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.main.id
-}
-
-# ASSOCIATE WITH SUBNET
-resource "aws_route_table_association" "public_assoc" {
-  subnet_id      = aws_subnet.public.id
-  route_table_id = aws_route_table.public.id
-}
-
-# CloudWatch Alarm
+# CloudWatch Alarm for EC2
 resource "aws_cloudwatch_metric_alarm" "my_watch" {
   alarm_name                = "terraform-test-my_watch5"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
@@ -214,4 +225,7 @@ resource "aws_cloudwatch_metric_alarm" "my_watch" {
   threshold                 = 80
   alarm_description         = "This metric monitors ec2 cpu utilization"
   insufficient_data_actions = []
+  dimensions = {
+    InstanceId = aws_instance.app_server.id
+  }
 }
