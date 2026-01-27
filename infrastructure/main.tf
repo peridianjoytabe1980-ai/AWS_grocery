@@ -52,11 +52,6 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_sns_topic" "topic" {
-  name = "WebServer-CPU_Utilization_alert"
-}
-
-
   # PRIVATE SUBNET 1
   resource "aws_subnet" "private_subnet_1" {
     vpc_id     = aws_vpc.main.id
@@ -207,6 +202,9 @@ resource "aws_db_instance" "app_db" {
 
 
 # SNS topic with email subscription
+resource "aws_sns_topic" "topic" {
+  name = "app_server-CPU_Utilization_alert"
+}
 resource "aws_sns_topic_subscription" "topic_email_subscription" {
   topic_arn = aws_sns_topic.topic.arn
   protocol  = "email"
@@ -225,6 +223,7 @@ resource "aws_cloudwatch_metric_alarm" "my_watch" {
   threshold                 = 80
   alarm_description         = "This metric monitors ec2 cpu utilization"
   insufficient_data_actions = []
+  alarm_actions             = [aws_sns_topic.topic.arn]
   dimensions = {
     InstanceId = aws_instance.app_server.id
   }
