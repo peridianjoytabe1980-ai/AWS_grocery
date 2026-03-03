@@ -4,7 +4,7 @@
 
 AWS Grocery is a cloud-based application deployed on AWS. 
 It includes an EC2 instance, PostgreSQL RDS database, S3 bucket for storing avatars, and a secure network setup (VPC, subnets, security groups, internet gateway). 
-Terraform is used for infrastructure provisioning and management.
+The application is fully containerized using Docker and infrastructure is provisioned using Terraform on AWS.
 
 ---
 ## Architecture Diagram
