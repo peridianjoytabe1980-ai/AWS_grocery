@@ -87,3 +87,35 @@ Terraform Outputs
 - Store passwords securely using Terraform variables with `sensitive = true`.
 ```
 
+## 🐳 Docker Containerization
+Overview
+
+The GroceryMate application is fully containerized using Docker to ensure portability, consistency across environments, and simplified deployment.
+
+By packaging the application code, dependencies, and runtime into a container image, the app can run consistently across local development and AWS environments.
+
+## Dockerfile Explanation
+
+The application uses the official Python 3.9 base image:
+FROM python:3.9
+
+The working directory is set inside the container:
+WORKDIR /app
+
+Application files and environment configuration are copied:
+COPY . .
+COPY .env .env
+
+Dependencies are installed:
+RUN pip install --no-cache-dir -r requirements.txt
+
+The application starts with:
+CMD ["python", "run.py"]
+
+## Build the Docker Image
+docker build -t grocerymate-app .
+
+## Run the Container Locally
+docker run -d -p 5000:5000 grocerymate-app
+
+Adjust the port if your app runs on a different one.
