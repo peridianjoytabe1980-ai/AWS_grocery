@@ -135,3 +135,5 @@ Automated testing
 Docker image build
 
 This ensures consistent builds and automated verification of application changes.
+
+![CI](https://github.com/yourusername/repository/actions/workflows/ci.yml/badge.svg)
