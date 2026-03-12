@@ -15,13 +15,13 @@ AWS GroceryMate is a cloud-based application deployed on AWS. It includes:
 The application is fully containerized using Docker and infrastructure is provisioned with Terraform. CI/CD is implemented with GitHub Actions for automated testing and deployment.
 
 ---
-## Architecture
+# Architecture
 Diagram shows VPC, subnets, IGW, EC2, RDS, and S3 bucket.
 
 ![Infrastructure Architecture](infrastructure/infrastructure_architech.png)
 
 ---
-## Prerequisites
+# Prerequisites
 Before running this project, ensure you have:
 
 - Terraform >= 1.5.0
@@ -30,7 +30,7 @@ Before running this project, ensure you have:
 - AWS account
 
 ---
-## Terraform Setup
+# Terraform Setup
 
 1. Clone the repository:
    ```bash
@@ -54,7 +54,7 @@ Enter your RDS password when prompted ( ≥ 8; Only printable ASCII characters b
 
 ---
 
-## Terraform Outputs
+# Terraform Outputs
 ```markdown
 Terraform Outputs
 
@@ -70,7 +70,7 @@ Terraform Outputs
 ```
 
 ---
-## Usage
+# Usage
 
 - SSH into the EC2 instance:
   ```bash
@@ -84,13 +84,13 @@ Terraform Outputs
 Use AWS CLI or AWS Management Console
 
 
-## 🐳 Docker Containerization
+# 🐳 Docker Containerization
 
-# Build the Docker Image
+## Build the Docker Image
 
  docker build -t grocerymate-app .
 
-# Run the Container Locally
+## Run the Container Locally
 
   docker run -d -p 5000:5000 grocerymate-app
 
@@ -99,7 +99,7 @@ Adjust the port if your app runs on a different one.
 
 
 
-## CI/CD Pipeline with GitHub Actions
+# CI/CD Pipeline with GitHub Actions
 This project includes a CI pipeline that automates:
 
 1. Code checkout
@@ -115,7 +115,7 @@ This ensures consistent builds and automated verification of application changes
 
 ---
 
-## Notes and Best Practices
+# Notes and Best Practices
 ```markdown
 ## Notes
 
