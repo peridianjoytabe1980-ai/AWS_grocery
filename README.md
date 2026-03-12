@@ -51,7 +51,6 @@ Before running this project, ensure you have:
 
 Enter your RDS password when prompted ( ≥ 8; Only printable ASCII characters besides '/', '@', '"', ' ' may be used).
 
-
 ---
 
 # Terraform Outputs
@@ -84,6 +83,7 @@ Terraform Outputs
 Use AWS CLI or AWS Management Console
 
 
+---
 # 🐳 Docker Containerization
 
 ## Build the Docker Image
@@ -96,7 +96,7 @@ Use AWS CLI or AWS Management Console
 
 
 Adjust the port if your app runs on a different one.
-
+---
 
 
 # CI/CD Pipeline with GitHub Actions
