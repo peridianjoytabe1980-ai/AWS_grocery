@@ -52,7 +52,6 @@ Before running this project, ensure you have:
 Enter your RDS password when prompted ( ≥ 8; Only printable ASCII characters besides '/', '@', '"', ' ' may be used).
 
 ---
-
 # Terraform Outputs
 ```markdown
 Terraform Outputs
@@ -67,7 +66,6 @@ Terraform Outputs
 | `avatars_bucket_name` | `grocerymate-avatars-tabe2` | S3 bucket for avatars |
 
 ```
-
 ---
 # Usage
 
@@ -82,7 +80,6 @@ Terraform Outputs
 - Access S3 bucket 
 Use AWS CLI or AWS Management Console
 
-
 ---
 # 🐳 Docker Containerization
 
@@ -94,11 +91,9 @@ Use AWS CLI or AWS Management Console
 
   docker run -d -p 5000:5000 grocerymate-app
 
-
 Adjust the port if your app runs on a different one.
+
 ---
-
-
 # CI/CD Pipeline with GitHub Actions
 This project includes a CI pipeline that automates:
 
@@ -112,9 +107,7 @@ This project includes a CI pipeline that automates:
 
 This ensures consistent builds and automated verification of application changes.
 
-
 ---
-
 # Notes and Best Practices
 ```markdown
 ## Notes
