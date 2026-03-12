@@ -38,15 +38,15 @@ Before running this project, ensure you have:
    cd AWS_grocery/infrastructure
 
 2. Initialize Terraform:
-
+   ```bash
     terraform init
 
 3. Review the Terraform plan:
-
+   ```bash
     terraform plan
 
 4. Apply the Terraform plan:
-
+   ```bash
     terraform apply
 
 Enter your RDS password when prompted ( ≥ 8; Only printable ASCII characters besides '/', '@', '"', ' ' may be used).
@@ -68,6 +68,7 @@ Terraform Outputs
 | `avatars_bucket_name` | `grocerymate-avatars-tabe2` | S3 bucket for avatars |
 
 ```
+
 ---
 ## Usage
 
@@ -76,7 +77,7 @@ Terraform Outputs
   ssh -i <your-key.pem> ec2-user@<ec2_public_ip>
 
 - Connect to PostgreSQL:
-
+  ```bash
   psql -h <db_endpoint> -U <db_username> -d <db_name>
 
 - Access S3 bucket 
@@ -84,33 +85,15 @@ Use AWS CLI or AWS Management Console
 
 
 ## 🐳 Docker Containerization
-Overview
 
-The GroceryMate application is fully containerized using Docker. Containerization ensures portability, consistency across environments, and simplified deployment on AWS or locally.
+# Build the Docker Image
 
-## Dockerfile
+ docker build -t grocerymate-app .
 
-The application uses the official Python 3.9 base image:
-FROM python:3.9
+# Run the Container Locally
 
-# Set working directory inside container
-WORKDIR /app
+  docker run -d -p 5000:5000 grocerymate-app
 
-# Copy application files and environment configuration
-COPY . .
-COPY .env .env
-
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Start the application
-CMD ["python", "run.py"]
-
-## Build the Docker Image
-docker build -t grocerymate-app .
-
-## Run the Container Locally
-docker run -d -p 5000:5000 grocerymate-app
 
 Adjust the port if your app runs on a different one.
 
@@ -129,7 +112,7 @@ This project includes a CI pipeline that automates:
 
 This ensures consistent builds and automated verification of application changes.
 
-![CI](https://github.com/yourusername/repository/actions/workflows/ci.yml/badge.svg)
+
 ---
 
 ## Notes and Best Practices

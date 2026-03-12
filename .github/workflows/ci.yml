@@ -2,29 +2,66 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - version2
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
+  terraform:
+    name: Terraform Plan & Apply
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
 
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+      - name: Terraform Init
+        working-directory: ./infrastructure
+        run: terraform init
 
-    - name: Run tests
-      run: |
-        pytest || true
+      - name: Terraform Plan
+        working-directory: ./infrastructure
+        run: terraform plan
 
-    - name: Build Docker image
-      run: |
-        docker build -t grocerymate .
+      # Optional: Only apply on main branch (careful with secrets)
+      # - name: Terraform Apply
+      #   if: github.ref == 'refs/heads/main'
+      #   working-directory: ./infrastructure
+      #   run: terraform apply -auto-approve
+
+  docker:
+    name: Docker Build & Test
+    runs-on: ubuntu-latest
+    needs: terraform
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          pip install --no-cache-dir -r requirements.txt
+
+      - name: Run tests
+        run: |
+          # Add your Python unit tests here
+          echo "No tests defined yet"
+
+      - name: Build Docker image
+        run: |
+          docker build -t grocerymate-app .
+
+      - name: Docker run smoke test
+        run: |
+          docker run -d -p 5000:5000 grocerymate-app
