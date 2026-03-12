@@ -119,3 +119,19 @@ docker build -t grocerymate-app .
 docker run -d -p 5000:5000 grocerymate-app
 
 Adjust the port if your app runs on a different one.
+
+
+## CI/CD Pipeline
+This project includes a CI pipeline using GitHub Actions.
+
+Pipeline stages:
+
+Code checkout
+
+Dependency installation
+
+Automated testing
+
+Docker image build
+
+This ensures consistent builds and automated verification of application changes.
