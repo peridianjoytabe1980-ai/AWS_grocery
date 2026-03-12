@@ -1,21 +1,28 @@
-# AWS Grocery Project
+# AWS GroceryMate Project
 
 ## Project Overview
 
-AWS Grocery is a cloud-based application deployed on AWS. 
-It includes an EC2 instance, PostgreSQL RDS database, S3 bucket for storing avatars, and a secure network setup (VPC, subnets, security groups, internet gateway). 
-The application is fully containerized using Docker and infrastructure is provisioned using Terraform on AWS.
+AWS GroceryMate is a cloud-based application deployed on AWS. It includes:
+
+- EC2 instance for the application server
+
+- PostgreSQL RDS for the database
+
+- S3 bucket for storing avatars
+
+- Secure network setup (VPC, subnets, security groups, internet gateway)
+
+The application is fully containerized using Docker and infrastructure is provisioned with Terraform. CI/CD is implemented with GitHub Actions for automated testing and deployment.
 
 ---
-## Architecture Diagram
+## Architecture
+Diagram shows VPC, subnets, IGW, EC2, RDS, and S3 bucket.
 
 ![Infrastructure Architecture](infrastructure/infrastructure_architech.png)
 
-
-*Diagram shows the VPC, subnets, IGW, EC2, RDS, and S3 bucket.*
-
 ---
 ## Prerequisites
+Before running this project, ensure you have:
 
 - Terraform >= 1.5.0
 - AWS CLI configured with access credentials
@@ -42,14 +49,12 @@ The application is fully containerized using Docker and infrastructure is provis
 
     terraform apply
 
-Enter your RDS password when prompted. Must be >= 8. Only printable ASCII characters besides '/', '@', '"', ' ' may be used.
+Enter your RDS password when prompted ( ≥ 8; Only printable ASCII characters besides '/', '@', '"', ' ' may be used).
 
 
 ---
 
-## List Terraform Outputs
-Include a table of important outputs so users know what resources were created:
-
+## Terraform Outputs
 ```markdown
 Terraform Outputs
 
@@ -74,42 +79,31 @@ Terraform Outputs
 
   psql -h <db_endpoint> -U <db_username> -d <db_name>
 
-- Access S3 bucket via AWS CLI or console
+- Access S3 bucket 
+Use AWS CLI or AWS Management Console
 
-
----
-
-## Notes and Best Practices
-```markdown
-## Notes
-
-- Do **not** commit `.terraform/` or Terraform state files; they are local only.
-- Store passwords securely using Terraform variables with `sensitive = true`.
-```
 
 ## 🐳 Docker Containerization
 Overview
 
-The GroceryMate application is fully containerized using Docker to ensure portability, consistency across environments, and simplified deployment.
+The GroceryMate application is fully containerized using Docker. Containerization ensures portability, consistency across environments, and simplified deployment on AWS or locally.
 
-By packaging the application code, dependencies, and runtime into a container image, the app can run consistently across local development and AWS environments.
-
-## Dockerfile Explanation
+## Dockerfile
 
 The application uses the official Python 3.9 base image:
 FROM python:3.9
 
-The working directory is set inside the container:
+# Set working directory inside container
 WORKDIR /app
 
-Application files and environment configuration are copied:
+# Copy application files and environment configuration
 COPY . .
 COPY .env .env
 
-Dependencies are installed:
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-The application starts with:
+# Start the application
 CMD ["python", "run.py"]
 
 ## Build the Docker Image
@@ -121,19 +115,29 @@ docker run -d -p 5000:5000 grocerymate-app
 Adjust the port if your app runs on a different one.
 
 
-## CI/CD Pipeline
-This project includes a CI pipeline using GitHub Actions.
 
-Pipeline stages:
+## CI/CD Pipeline with GitHub Actions
+This project includes a CI pipeline that automates:
 
-Code checkout
+1. Code checkout
 
-Dependency installation
+2. Dependency installation
 
-Automated testing
+3. Automated testing
 
-Docker image build
+4. Docker image build
 
 This ensures consistent builds and automated verification of application changes.
 
 ![CI](https://github.com/yourusername/repository/actions/workflows/ci.yml/badge.svg)
+---
+
+## Notes and Best Practices
+```markdown
+## Notes
+
+- Do **not** commit `.terraform/` or Terraform state files; they are local only.
+- Store passwords securely using Terraform variables with `sensitive = true`.
+- Keep Docker images and dependencies updated for security and stability
+```
+
